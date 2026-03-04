@@ -1,27 +1,34 @@
-# Uncertainty-Aware OCR with GRPO
+# Teaching VLMs to Admit Uncertainty in OCR from Lossy Visual Inputs
 
-This repository contains the core code of uncertainty-aware OCR. The system trains OCR models to use `<C>...</C>` markers to indicate uncertain regions instead of forcing potentially incorrect outputs.
+This project provides the core components of an uncertainty-aware OCR pipeline. Instead of forcing potentially incorrect outputs on lossy/degraded inputs, the model is trained to explicitly mark uncertain spans using **`<C>...</C>`**.
 
-## Files
+---
 
-- **ocr_gt_align.py**: Implements pseudo-labeled cold start by aligning OCR predictions with ground truth and inserting uncertainty tags around detected errors (character or word level).
+## Dataset: Blur-OCR
 
-- **ocr_reward_word_level.py**: Computes the uncertainty-aware reward function combining transcription accuracy and tagging quality for GRPO training.
+The paper introduces **Blur-OCR**, a benchmark for uncertainty-aware OCR under lossy visual conditions:
 
-- **data_sample/**: Contains sample degraded images with corresponding ground truth texts for testing.
+Hugging Face: https://huggingface.co/datasets/ShuhaoGuan/Blur-OCR
 
-## Quick Start
+---
 
-```python
-# Test alignment and tagging
-python ocr_gt_align.py
+## What's inside
 
-# Test reward computation
-python ocr_reward_word_level.py
-```
+- **`ocr_gt_align.py`**  
+  Pseudo-labeled cold start via alignment between OCR predictions and ground truth. It detects mismatches and inserts uncertainty tags around error regions (character-level or word-level).
 
-Both files contain example usage in their `main()` functions demonstrating the core functionality.
+- **`ocr_reward_word_level.py`**  
+  Uncertainty-aware reward for GRPO training (word-level). It combines transcription accuracy with tagging quality and includes defenses against reward hacking (e.g., length-mismatch damping).
 
-## Concepts
+---
 
-The system prevents reward hacking through length-mismatch damping and ensures that adding errors always reduces the total reward even with perfect tagging.
+If you find our paper useful, please cite:
+
+```bibtex
+@inproceedings{guan2026teach_vlms_uncertainty_ocr,
+  title     = {Teaching VLMs to Admit Uncertainty in OCR from Lossy Visual Inputs},
+  author    = {Shuhao Guan and Moule Lin and Cheng Xu and Jinman Zhao and Derek Greene},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=zyCjizqOxB}
+}
